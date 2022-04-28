@@ -3,6 +3,8 @@ package game2048;
 import java.util.Formatter;
 import java.util.Observable;
 
+import static java.lang.Math.abs;
+
 
 /** The state of a game of 2048.
  *  @author TODO: YOUR NAME HERE
@@ -94,6 +96,33 @@ public class Model extends Observable {
         setChanged();
     }
 
+    private void tileColumn(int c) {
+        int lastValueRow = -1;
+        int lastValue = -1;
+        boolean mergedBefore = false;
+        for (int r = board.size() - 1; r >= 0; r -= 1) {
+            Tile curTile = board.tile(c,r);
+            if (curTile != null) {
+                if (lastValueRow != -1 && (curTile.value() != lastValue || mergedBefore)) {
+                    mergedBefore = board.move(c, lastValueRow - 1, curTile);
+                    lastValueRow -= 1;
+                } else if (lastValueRow != -1  && curTile.value() == lastValue && !mergedBefore) {
+                    score += curTile.value() * 2;
+                    mergedBefore = board.move(c, lastValueRow, curTile);
+                }
+                if (lastValueRow == -1) {
+                    mergedBefore = board.move(c, board.size() - 1, curTile);
+                    lastValueRow = board.size() - 1;
+                }
+                lastValue = curTile.value();
+            }
+        }
+    }
+
+    private boolean isChanged(String prevState, String curState) {
+        return !prevState.equals(this.toString());
+    }
+
     /** Tilt the board toward SIDE. Return true iff this changes the board.
      *
      * 1. If two Tile objects are adjacent in the direction of motion and have
@@ -108,12 +137,13 @@ public class Model extends Observable {
      * */
     public boolean tilt(Side side) {
         boolean changed;
-        changed = false;
-
-        // TODO: Modify this.board (and perhaps this.score) to account
-        // for the tilt to the Side SIDE. If the board changed, set the
-        // changed local variable to true.
-
+        String prevState = this.toString();
+        board.setViewingPerspective(side);
+        for (int c = 0; c < board.size(); c += 1) {
+            tileColumn(c);
+        }
+        board.setViewingPerspective(Side.NORTH);
+        changed = isChanged(prevState, this.toString());
         checkGameOver();
         if (changed) {
             setChanged();
@@ -137,7 +167,13 @@ public class Model extends Observable {
      *  Empty spaces are stored as null.
      * */
     public static boolean emptySpaceExists(Board b) {
-        // TODO: Fill in this function.
+        for (int i = 0; i < b.size(); i++) {
+            for (int j = 0; j < b.size(); j++) {
+                if (b.tile(i, j) == null) {
+                    return true;
+                }
+            }
+        }
         return false;
     }
 
@@ -147,7 +183,47 @@ public class Model extends Observable {
      * given a Tile object t, we get its value with t.value().
      */
     public static boolean maxTileExists(Board b) {
-        // TODO: Fill in this function.
+        for (int i = 0; i < b.size(); i++) {
+            for (int j = 0; j < b.size(); j++) {
+                if (b.tile(i, j) != null && b.tile(i, j).value() == MAX_PIECE) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    public static boolean isValidIndex(int i, int j, Board b) {
+        return i >= 0 && j >= 0 && i < b.size() && j < b.size();
+    }
+
+    public static boolean isSameSquareNear(Board b, int col, int row) {
+        Tile tileToCompare = b.tile(col, row);
+        for (int i = -1; i < 2; i++) {
+            for (int j = -1; j < 2; j++) {
+                int currentCol = col + i;
+                int currentRow = row + j;
+                if (isValidIndex(currentCol, currentRow, b) && abs(i) != abs(j)) {
+                    Tile currentTile = b.tile(currentCol, currentRow);
+                    if (currentTile != null && tileToCompare != null) {
+                        if (currentTile.value() == tileToCompare.value()) {
+                            return true;
+                        }
+                    }
+                }
+            }
+        }
+        return false;
+    }
+
+    public static boolean hasSameAdjacentValues(Board b) {
+        for (int i = 0; i < b.size(); i++) {
+            for (int j = 0; j < b.size(); j++) {
+                if (isSameSquareNear(b, i, j)) {
+                    return true;
+                }
+            }
+        }
         return false;
     }
 
@@ -158,8 +234,7 @@ public class Model extends Observable {
      * 2. There are two adjacent tiles with the same value.
      */
     public static boolean atLeastOneMoveExists(Board b) {
-        // TODO: Fill in this function.
-        return false;
+        return hasSameAdjacentValues(b) || emptySpaceExists(b);
     }
 
 
