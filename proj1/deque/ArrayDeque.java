@@ -66,8 +66,8 @@ public class ArrayDeque<T> {
 
     public T removeFirst() {
         if (size > 0) {
-            T first = items[nextFirst + 1];
-            items[nextFirst + 1] = null;
+            T first = items[plusOne(nextFirst)];
+            items[plusOne(nextFirst)] = null;
             nextFirst = plusOne(nextFirst);
             size -= 1;
             return first;
