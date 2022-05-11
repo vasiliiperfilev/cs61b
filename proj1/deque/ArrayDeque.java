@@ -16,7 +16,7 @@ public class ArrayDeque<T> {
 
     private int minusOne(int index) {
         if (index - 1 < 0) {
-            return 0;
+            return items.length - 1;
         }
         return index - 1;
     }
@@ -49,7 +49,7 @@ public class ArrayDeque<T> {
     }
 
     public void printDeque() {
-        if (nextLast > nextFirst) {
+        if (nextLast > nextFirst && size < items.length) {
             for (int i = nextFirst + 1; i < nextLast; i += 1) {
                 System.out.print(items[i] + " ");
             }
