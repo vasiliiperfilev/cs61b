@@ -38,19 +38,17 @@ public class ArrayDeque<T> {
     }
 
     private void resize(int capacity) {
-        T[] a = (T[]) new Object[capacity];
-        T[] ordered = (T[]) new Object[items.length];
-        int j = 0;
-        for (int i = nextLast; i != nextFirst; i = plusOne(i)) {
-            ordered[j] = items[i];
-            j += 1;
+        T[] temp = (T[]) new Object[capacity];
+        int newNextFirst = temp.length / 2 - size / 2 - 1;
+        int newNextLast = temp.length / 2 - size / 2;
+        for (int i = 0; i < size; i += 1) {
+            T item = this.get(i);
+            temp[newNextLast] = item;
+            newNextLast += 1;
         }
-        ordered[j] = items[nextFirst];
-        int startPosition = a.length / 2 - items.length / 2 + 1;
-        System.arraycopy(ordered, 0, a, startPosition, ordered.length);
-        nextFirst = startPosition - 1;
-        nextLast = startPosition + ordered.length;
-        items = a;
+        items = temp;
+        nextFirst = newNextFirst;
+        nextLast = newNextLast;
     }
 
     public void addLast(T item) {
@@ -88,6 +86,9 @@ public class ArrayDeque<T> {
 
     public T removeFirst() {
         if (size > 0) {
+            if ((size < items.length / 4) && (size > 16)) {
+                resize(items.length / 4 + 2);
+            }
             T first = items[plusOne(nextFirst)];
             items[plusOne(nextFirst)] = null;
             nextFirst = plusOne(nextFirst);
@@ -99,6 +100,9 @@ public class ArrayDeque<T> {
 
     public T removeLast() {
         if (size > 0) {
+            if ((size < items.length / 4) && (size > 16)) {
+                resize(items.length / 4 + 2);
+            }
             T last = items[minusOne(nextLast)];
             items[minusOne(nextLast)] = null;
             nextLast = minusOne(nextLast);
