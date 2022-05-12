@@ -29,12 +29,34 @@ public class ArrayDeque<T> {
     }
 
     public void addFirst(T item) {
+        if (nextLast > nextFirst && size == items.length) {
+            resize(items.length * 2);
+        }
         items[nextFirst] = item;
         nextFirst = minusOne(nextFirst);
         size += 1;
     }
 
+    private void resize(int capacity) {
+        T[] a = (T[]) new Object[capacity];
+        T[] ordered = (T[]) new Object[items.length];
+        int j = 0;
+        for (int i = nextLast; i != nextFirst; i = plusOne(i)) {
+            ordered[j] = items[i];
+            j += 1;
+        }
+        ordered[j] = items[nextFirst];
+        int startPosition = a.length / 2 - items.length / 2 + 1;
+        System.arraycopy(ordered, 0, a, startPosition, ordered.length);
+        nextFirst = startPosition - 1;
+        nextLast = startPosition + ordered.length;
+        items = a;
+    }
+
     public void addLast(T item) {
+        if (nextLast > nextFirst && size == items.length) {
+            resize(items.length * 2);
+        }
         items[nextLast] = item;
         nextLast = plusOne(nextLast);
         size += 1;
@@ -77,8 +99,8 @@ public class ArrayDeque<T> {
 
     public T removeLast() {
         if (size > 0) {
-            T last = items[nextLast - 1];
-            items[nextLast - 1] = null;
+            T last = items[minusOne(nextLast)];
+            items[minusOne(nextLast)] = null;
             nextLast = minusOne(nextLast);
             size -= 1;
             return last;
