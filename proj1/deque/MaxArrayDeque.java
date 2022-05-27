@@ -2,12 +2,12 @@ package deque;
 
 import java.util.Comparator;
 
-public class MaxArrayDeque<T> extends ArrayDeque<T>{
-    private Comparator<T> c;
+public class MaxArrayDeque<T> extends ArrayDeque<T> {
+    private Comparator<T> comparator;
 
-    public MaxArrayDeque(Comparator<T> c) {
+    MaxArrayDeque(Comparator<T> c) {
         super();
-        this.c = c;
+        this.comparator = c;
     }
 
     public T max() {
@@ -17,7 +17,7 @@ public class MaxArrayDeque<T> extends ArrayDeque<T>{
             for (int i = 0; i < size() - 1; i++) {
                 p += 1;
                 T curVal = get(p);
-                if (c.compare(curMax, curVal) < 0) {
+                if (comparator.compare(curMax, curVal) < 0) {
                     curMax = curVal;
                 }
             }
@@ -27,10 +27,10 @@ public class MaxArrayDeque<T> extends ArrayDeque<T>{
     }
 
     public T max(Comparator<T> c) {
-        Comparator<T> temp = this.c;
-        this.c = c;
+        Comparator<T> temp = this.comparator;
+        this.comparator = c;
         T max = max();
-        this.c = temp;
+        this.comparator = temp;
         return max;
     }
 
@@ -38,7 +38,7 @@ public class MaxArrayDeque<T> extends ArrayDeque<T>{
 
         @Override
         public int compare(Integer num1, Integer num2) {
-            return num1-num2;
+            return num1 - num2;
         }
     }
 

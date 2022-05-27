@@ -1,17 +1,15 @@
 package deque;
 
-import afu.org.checkerframework.checker.oigj.qual.O;
-
 import java.util.Iterator;
 
-public class LinkedListDeque<T> implements Iterable<T>, Deque<T>{
+public class LinkedListDeque<T> implements Iterable<T>, Deque<T> {
 
-    private class Node{
+    private class Node {
         T value;
         Node next;
         Node previous;
 
-        public Node(T value, Node next, Node previous) {
+        Node(T value, Node next, Node previous) {
             this.value = value;
             this.next = next;
             this.previous = previous;
@@ -67,7 +65,7 @@ public class LinkedListDeque<T> implements Iterable<T>, Deque<T>{
 
     @Override
     public T removeFirst() {
-        if (size > 0){
+        if (size > 0) {
             Node first = sentinel.next;
             sentinel.next = sentinel.next.next;
             sentinel.next.previous = sentinel;
@@ -79,7 +77,7 @@ public class LinkedListDeque<T> implements Iterable<T>, Deque<T>{
 
     @Override
     public T removeLast() {
-        if (size > 0){
+        if (size > 0) {
             Node last = sentinel.previous;
             sentinel.previous = sentinel.previous.previous;
             sentinel.previous.next = sentinel;
@@ -119,7 +117,7 @@ public class LinkedListDeque<T> implements Iterable<T>, Deque<T>{
     private class LinkedListIterator implements Iterator<T> {
         Node head;
 
-        public LinkedListIterator() {
+        LinkedListIterator() {
             head = sentinel.next;
         }
         @Override
@@ -142,8 +140,12 @@ public class LinkedListDeque<T> implements Iterable<T>, Deque<T>{
 
     @Override
     public boolean equals(Object other) {
-        if (other == null) return false;
-        if (other.getClass() != this.getClass()) return false;
+        if (other == null) {
+            return false;
+        }
+        if (other.getClass() != this.getClass()) {
+            return false;
+        }
         LinkedListDeque<T> o = (LinkedListDeque<T>) other;
         if (this.size() != o.size()) {
             return false;

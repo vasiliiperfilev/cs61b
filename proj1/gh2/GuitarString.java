@@ -25,11 +25,11 @@ public class GuitarString {
 
     /* Pluck the guitar string by replacing the buffer with white noise. */
     public void pluck() {
-            for (int i = 0; i < buffer.size(); i += 1) {
-                double r = Math.random() - 0.5;
-                buffer.removeFirst();
-                buffer.addLast(r);
-            }
+        for (int i = 0; i < buffer.size(); i += 1) {
+            double r = Math.random() - 0.5;
+            buffer.removeFirst();
+            buffer.addLast(r);
+        }
     }
 
     /* Advance the simulation one time step by performing one iteration of
