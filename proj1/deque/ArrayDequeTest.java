@@ -174,4 +174,19 @@ public class ArrayDequeTest {
 
         assertEquals(lld1, lld2);
     }
+
+    @Test
+    public void equalsTestArrayAndLinkedList() {
+        LinkedListDeque<Integer> lld1 = new LinkedListDeque<Integer>();
+        for (int i = 0; i < 10; i++) {
+            lld1.addLast(i);
+        }
+
+        ArrayDeque<Integer> lld2 = new ArrayDeque<Integer>();
+        for (int i = 0; i < 10; i++) {
+            lld2.addLast(i);
+        }
+
+        assertEquals(lld1, lld2);
+    }
 }
