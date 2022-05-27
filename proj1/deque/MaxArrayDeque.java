@@ -33,28 +33,4 @@ public class MaxArrayDeque<T> extends ArrayDeque<T> {
         this.comparator = temp;
         return max;
     }
-
-    private static class IntComparator implements Comparator<Integer> {
-
-        @Override
-        public int compare(Integer num1, Integer num2) {
-            return num1 - num2;
-        }
-    }
-
-    public static Comparator<Integer> getIntComparator() {
-        return new IntComparator();
-    }
-
-    private static class ReminderBy2Comparator implements Comparator<Integer> {
-
-        @Override
-        public int compare(Integer num1, Integer num2) {
-            return num1 % 2 - num2 % 2;
-        }
-    }
-
-    public static Comparator<Integer> getReminderBy2Comparator() {
-        return new ReminderBy2Comparator();
-    }
 }
