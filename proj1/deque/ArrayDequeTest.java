@@ -145,4 +145,33 @@ public class ArrayDequeTest {
             assertEquals("Should have the same value", i, ad1.removeFirst(), 0.0);
         }
     }
+
+    @Test
+    /* Add large number of elements to deque; check if order is correct. */
+    public void iterationTest() {
+        ArrayDeque<Integer> lld1 = new ArrayDeque<Integer>();
+        for (int i = 0; i < 10; i++) {
+            lld1.addLast(i);
+        }
+
+        for (int i : lld1) {
+            System.out.println(i);
+        }
+    }
+
+    @Test
+    /* Add large number of elements to deque; check if order is correct. */
+    public void equalsTest() {
+        ArrayDeque<Integer> lld1 = new ArrayDeque<Integer>();
+        for (int i = 0; i < 10; i++) {
+            lld1.addLast(i);
+        }
+
+        ArrayDeque<Integer> lld2 = new ArrayDeque<Integer>();
+        for (int i = 0; i < 10; i++) {
+            lld2.addLast(i);
+        }
+
+        assertEquals(lld1, lld2);
+    }
 }
