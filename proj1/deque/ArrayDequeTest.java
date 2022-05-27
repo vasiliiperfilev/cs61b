@@ -163,12 +163,12 @@ public class ArrayDequeTest {
     /* Add large number of elements to deque; check if order is correct. */
     public void equalsTest() {
         ArrayDeque<Integer> lld1 = new ArrayDeque<Integer>();
-        for (int i = 0; i < 10; i++) {
+        for (int i = 0; i < 10; i += 1) {
             lld1.addLast(i);
         }
 
         ArrayDeque<Integer> lld2 = new ArrayDeque<Integer>();
-        for (int i = 0; i < 10; i++) {
+        for (int i = 0; i < 10; i += 1) {
             lld2.addLast(i);
         }
 
