@@ -1,0 +1,30 @@
+ This program inserts random Strings of length L
+ Into different types of maps as <String, Integer> pairs.
+
+What would you like L to be?: 10
+
+Enter # strings to insert into each map: 100000
+class hashmap.MyHashMapALBuckets: 0.37 sec
+class hashmap.MyHashMapLLBuckets: 0.24 sec
+class hashmap.MyHashMapTSBuckets: 0.29 sec
+class hashmap.MyHashMapHSBuckets: 0.28 sec
+class hashmap.MyHashMapPQBuckets: 0.26 sec
+
+Would you like to try more timed-tests? (y/n)y
+
+Enter # strings to insert into each map: 200000
+class hashmap.MyHashMapALBuckets: 0.56 sec
+class hashmap.MyHashMapLLBuckets: 0.56 sec
+class hashmap.MyHashMapTSBuckets: 0.51 sec
+class hashmap.MyHashMapHSBuckets: 0.55 sec
+class hashmap.MyHashMapPQBuckets: 0.77 sec
+
+Would you like to try more timed-tests? (y/n)n
+
+Process finished with exit code 0
+
+When would it be better to use a BSTMap/TreeMap instead of a HashMap?
+Maybe when it's hard to find a good hash function to prevent collisions
+
+Would our hash table speed up if we were able to use a logarithmic search over the TreeSet or a constant-time search over the HashSet?
+It would but not much because of the load factor + a good hash function = small size of buckets. But I guess over time number of collisions grows and in that case it would be significantly faster
