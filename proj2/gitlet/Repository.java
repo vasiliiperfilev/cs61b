@@ -52,7 +52,7 @@ public class Repository {
 
     public static void add(String fileName) {
         Blob newBlob = new Blob(fileName);
-        stagingArea.update(newBlob);
+        stagingArea.addOrUpdate(newBlob);
         stagingArea.save();
     }
 
@@ -82,9 +82,13 @@ public class Repository {
         saveOrUpdateInCWD(fileName, fileContent);
     }
 
-
     public static void log() {
         String log = currentBranch.getLastCommit().log();
         System.out.print(log);
+    }
+
+    public static void rm(String fileName) {
+        stagingArea.remove(fileName);
+        stagingArea.save();
     }
 }

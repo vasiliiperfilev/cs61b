@@ -1,6 +1,5 @@
 package gitlet;
 
-import java.io.File;
 import java.io.Serializable;
 import java.util.HashMap;
 
@@ -41,18 +40,18 @@ public class StagingArea implements Serializable {
     }
 
     /** Methods */
-    private void removeIfExists(String fileName) {
+    private void removeFromAdd(String fileName) {
         if (addBlobs.containsKey(fileName)) {
             addBlobs.remove(fileName);
             Blob.deleteBlobFile(fileName);
         };
     }
 
-    public void update(Blob newBlob) {
+    public void addOrUpdate(Blob newBlob) {
         String fileName = newBlob.getFileName();
         String blobId = newBlob.getBlobId();
         if (Repository.currentBranch.getLastCommit().containsSame(newBlob)) {
-            removeIfExists(fileName);
+            removeFromAdd(fileName);
             return;
         }
 
@@ -83,5 +82,14 @@ public class StagingArea implements Serializable {
     public void clear() {
         this.addBlobs = new HashMap<String, String>();
         this.removeBlobs = new HashMap<String, String>();
+    }
+
+    public void remove(String fileName) {
+        removeFromAdd(fileName);
+        String commitedBlobId = Repository.currentBranch.getLastCommit().getBlobId(fileName);
+        if (commitedBlobId != null) {
+            removeBlobs.put(fileName, commitedBlobId);
+            Utils.restrictedDelete(Utils.join(Repository.CWD, fileName));
+        }
     }
 }

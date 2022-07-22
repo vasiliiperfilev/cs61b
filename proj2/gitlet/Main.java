@@ -60,6 +60,16 @@ public class Main {
                 initialInputCheck(0,args);
                 Repository.log();
                 break;
+            case "rm":
+                //TODO: ADD new file -> RM test, change commited -> ADD -> RM test, RM tracked without changes test
+                initialInputCheck(1,args);
+                fileName = args[1];
+                try{
+                    Repository.rm(fileName);
+                } catch (Exception e) {
+                    exitWithError("No reason to remove the file.");
+                }
+                break;
             default:
                 exitWithError("No command with that name exists.");
         }

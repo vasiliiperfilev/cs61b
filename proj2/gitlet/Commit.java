@@ -132,6 +132,14 @@ public class Commit implements Serializable {
         }
     }
 
+    public boolean trackFile(String fileName) {
+        return trackedBlobs.containsKey(fileName);
+    }
+
+    public String getBlobId(String fileName) {
+        return trackedBlobs.get(fileName);
+    }
+
     public boolean containsSame(Blob newBlob) {
         String newFileName = newBlob.getFileName();
         String newId = newBlob.getBlobId();
