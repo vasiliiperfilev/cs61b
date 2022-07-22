@@ -15,6 +15,12 @@ public class Branch {
         return null;
     }
 
+    public static Branch createNew(String name, String lastCommitId) {
+        Branch branch = new Branch(name, lastCommitId);
+        branch.createFile();
+        return branch;
+    }
+
     public static Branch fromFile(File branchFile) {
         if (branchFile.exists()) {
             String lastCommit = Utils.readContentsAsString(branchFile);
@@ -26,6 +32,7 @@ public class Branch {
     /** Fields */
     private String name;
     private String lastCommitId;
+    private File file;
 
     /** Getters/Setters */
     public String getName() {
@@ -48,14 +55,21 @@ public class Branch {
     public Branch(String name, String lastCommitId) {
         this.name = name;
         this.lastCommitId = lastCommitId;
+        this.file = Utils.join(Repository.BRANCHES_HEAD_DIR, this.name);
     }
 
     /** Methods */
     public void save() {
+        Utils.writeContents(this.file, this.lastCommitId);
+    }
+
+    public void createFile() {
         try {
-            File branchFile = Utils.join(Repository.BRANCHES_HEAD_DIR, this.name);
-            branchFile.createNewFile();
-            Utils.writeContents(branchFile, this.lastCommitId);
+            if (this.file.exists()) {
+                throw new RuntimeException();
+            }
+            this.file.createNewFile();
+            Utils.writeContents(this.file, this.lastCommitId);
         } catch (IOException e) {
             System.out.println(e.getStackTrace());
         }

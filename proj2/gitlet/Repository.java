@@ -45,8 +45,7 @@ public class Repository {
     public static void init() {
         Commit initialCommit = new Commit();
         initialCommit.save();
-        Branch master = new Branch("master", initialCommit.getId());
-        master.save();
+        Branch master = Branch.createNew("master", initialCommit.getId());
         changeHead(master);
     }
 
@@ -64,7 +63,6 @@ public class Repository {
         saveState();
     }
 
-    /* TODO: fill in the rest of this class. */
     static private void saveState() {
         stagingArea.save();
         currentBranch.save();
@@ -76,9 +74,7 @@ public class Repository {
     }
 
     public static void checkout(String commitId, String fileName) {
-        // read file from commit
         String fileContent = Commit.readFileContentFrom(commitId, fileName);
-        // save this file in CWD (overwrite if required)
         saveOrUpdateInCWD(fileName, fileContent);
     }
 
@@ -90,5 +86,9 @@ public class Repository {
     public static void rm(String fileName) {
         stagingArea.remove(fileName);
         stagingArea.save();
+    }
+
+    public static void branch(String branchName) {
+        Branch.createNew(branchName, currentBranch.getLastCommitId());
     }
 }

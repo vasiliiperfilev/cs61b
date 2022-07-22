@@ -23,7 +23,6 @@ public class Main {
                 Repository.init();
                 break;
             case "add":
-                // TODO: RM -> ADD test
                 initialInputCheck(1,args);
                 String fileName = args[1];
                 if (!Utils.join(Repository.CWD, fileName).exists()) {
@@ -61,13 +60,21 @@ public class Main {
                 Repository.log();
                 break;
             case "rm":
-                //TODO: ADD new file -> RM test, change commited -> ADD -> RM test, RM tracked without changes test
                 initialInputCheck(1,args);
                 fileName = args[1];
                 try{
                     Repository.rm(fileName);
                 } catch (Exception e) {
                     exitWithError("No reason to remove the file.");
+                }
+                break;
+            case "branch":
+                initialInputCheck(1,args);
+                String branchName = args[1];
+                try{
+                    Repository.branch(branchName);
+                } catch (Exception e) {
+                    exitWithError("A branch with that name already exists.");
                 }
                 break;
             default:

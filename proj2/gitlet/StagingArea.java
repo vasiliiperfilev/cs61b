@@ -40,11 +40,13 @@ public class StagingArea implements Serializable {
     }
 
     /** Methods */
-    private void removeFromAdd(String fileName) {
+    private boolean removeFromAdd(String fileName) {
         if (addBlobs.containsKey(fileName)) {
             addBlobs.remove(fileName);
             Blob.deleteBlobFile(fileName);
+            return true;
         };
+        return false;
     }
 
     public void addOrUpdate(Blob newBlob) {
@@ -84,12 +86,16 @@ public class StagingArea implements Serializable {
         this.removeBlobs = new HashMap<String, String>();
     }
 
-    public void remove(String fileName) {
-        removeFromAdd(fileName);
+    public void remove(String fileName) throws RuntimeException {
+        boolean wasRemoved = removeFromAdd(fileName);
         String commitedBlobId = Repository.currentBranch.getLastCommit().getBlobId(fileName);
         if (commitedBlobId != null) {
             removeBlobs.put(fileName, commitedBlobId);
             Utils.restrictedDelete(Utils.join(Repository.CWD, fileName));
+            wasRemoved = true;
+        }
+        if (!wasRemoved){
+            throw new RuntimeException();
         }
     }
 }
