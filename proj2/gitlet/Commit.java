@@ -5,23 +5,49 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.util.Date; // TODO: You'll likely use this in this class
 import java.util.HashMap;
+import java.util.List;
 
 public class Commit implements Serializable {
     /** Static methods */
 
-    public static Commit readCurrentCommit() {
-        if (Repository.currentBranch != null) {
-            File commitFile = Utils.join(Repository.COMMITS_DIR, Repository.currentBranch.getLastCommitId());
-            return fromFile(commitFile);
-        }
-        return null;
-    }
-
-    public static Commit fromFile(File commitFile) {
+    public static Commit fromFile(String commitId) {
+        String fullCommitId = getFullCommitId(commitId);
+        File commitFile = Utils.join(Repository.COMMITS_DIR, fullCommitId);
         if (commitFile.exists()) {
             return Utils.readObject(commitFile, Commit.class);
         }
+        System.out.println("No commit with that id exists.");
+        System.exit(0);
         return null;
+    }
+
+    public static String readFileContentFrom(String commitId, String fileName) {
+        Commit commit = fromFile(commitId);
+        String blobId = commit.getTrackedBlobs().get(fileName);
+        if (blobId != null) {
+            Blob blob = Blob.fromFile(blobId);
+            String fileContent = blob.getFileContent();
+            return fileContent;
+        }
+        System.out.println("File does not exist in that commit.");
+        System.exit(0);
+        return null;
+    }
+
+    public static String getFullCommitId(String startId) {
+        String fullCommitId = null;
+        if (startId.length() < 40) {
+            List<String> commitsList = Utils.plainFilenamesIn(Repository.COMMITS_DIR);
+            for (String id : commitsList) {
+                String shortId = id.substring(0, startId.length());
+                if (shortId.equals(startId)) {
+                    fullCommitId = id;
+                }
+            }
+        } else {
+            fullCommitId = startId;
+        }
+        return fullCommitId;
     }
 
     /** Fields */
@@ -128,5 +154,27 @@ public class Commit implements Serializable {
                 trackedBlobs.remove(fileName);
             }
         }
+    }
+
+    public String log() {
+        Commit commitToLog = this;
+        String log = "";
+        while (commitToLog != null) {
+            log += commitToLog.toString() + "\n";
+            if (commitToLog.getParentCommitId() != null) {
+                commitToLog = Commit.fromFile(commitToLog.getParentCommitId());
+            } else {
+                commitToLog = null;
+            }
+        }
+        return log;
+    }
+
+    @Override
+    public String toString() {
+        return "===\n" +
+                "commit " + id + "\n" +
+                "Date: " + String.format("%1$ta %1$tb %1$td %1$tT %1$tY %1$tz", timestamp) + "\n" +
+                message + "\n";
     }
 }

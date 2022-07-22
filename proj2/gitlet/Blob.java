@@ -6,8 +6,15 @@ import java.io.Serializable;
 
 public class Blob implements Serializable {
     /** Static methods */
-    public static void deleteBlobFile(String fileName) {
-        File file = Utils.join(Repository.BLOBS_DIR, fileName);
+    public static Blob fromFile(String blobId) {
+        File blobFile = Utils.join(Repository.BLOBS_DIR, blobId);
+        if (blobFile.exists()) {
+            return Utils.readObject(blobFile, Blob.class);
+        }
+        return null;
+    }
+    public static void deleteBlobFile(String blobId) {
+        File file = Utils.join(Repository.BLOBS_DIR, blobId);
         if (file.exists()) {
             file.delete();
         }
@@ -16,6 +23,7 @@ public class Blob implements Serializable {
     /** Fields */
     private String fileName;
     private String blobId;
+    private String fileContent;
 
     /** Getters/Setters */
     public String getFileName() {
@@ -34,17 +42,26 @@ public class Blob implements Serializable {
         this.blobId = blobId;
     }
 
+    public String getFileContent() {
+        return fileContent;
+    }
+
+    public void setFileContent(String fileContent) {
+        this.fileContent = fileContent;
+    }
+
     /** Constructors */
     public Blob(String fileName) {
         this.fileName = fileName;
-        generateId();
+        this.fileContent = Utils.readContentsAsString(Utils.join(Repository.CWD, this.fileName));
+        this.blobId = generateId();
     }
 
     /** Methods */
-    public void generateId() {
+    private String generateId() {
         File file = Utils.join(Repository.CWD, this.fileName);
         if (file.exists()) {
-            this.blobId = Utils.sha1(this.fileName, Utils.readContents(file));
+            return Utils.sha1(this.fileName, Utils.readContents(file));
         } else {
             throw new RuntimeException("File does not exist.");
         }

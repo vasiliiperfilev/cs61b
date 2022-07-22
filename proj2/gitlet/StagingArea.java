@@ -8,13 +8,9 @@ public class StagingArea implements Serializable {
     /** Static methods */
     public static StagingArea readCurrentStagingArea() {
         if (Repository.STAGING_AREA.exists()) {
-            return fromFile(Repository.STAGING_AREA);
+            return Utils.readObject(Repository.STAGING_AREA, StagingArea.class);
         }
         return null;
-    }
-
-    public static StagingArea fromFile(File stagingAreaFile) {
-        return Utils.readObject(stagingAreaFile, StagingArea.class);
     }
 
     /** Fields */
@@ -45,7 +41,7 @@ public class StagingArea implements Serializable {
     }
 
     /** Methods */
-    public void removeIfExists(String fileName) {
+    private void removeIfExists(String fileName) {
         if (addBlobs.containsKey(fileName)) {
             addBlobs.remove(fileName);
             Blob.deleteBlobFile(fileName);

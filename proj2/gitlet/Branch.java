@@ -62,7 +62,6 @@ public class Branch {
     }
 
     public Commit getLastCommit() {
-        File commitFile = Utils.join(Repository.COMMITS_DIR, lastCommitId);
-        return Utils.readObject(commitFile, Commit.class);
+        return Commit.fromFile(lastCommitId);
     }
 }

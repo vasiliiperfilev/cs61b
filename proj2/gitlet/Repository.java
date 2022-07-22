@@ -37,6 +37,11 @@ public class Repository {
         Utils.writeContents(HEAD_POINTER, branch.getName());
     }
 
+    public static void saveOrUpdateInCWD(String fileName, String fileContent) {
+        File file = Utils.join(CWD, fileName);
+        Utils.writeContents(file, fileContent);
+    }
+
     public static void init() {
         Commit initialCommit = new Commit();
         initialCommit.save();
@@ -63,5 +68,23 @@ public class Repository {
     static private void saveState() {
         stagingArea.save();
         currentBranch.save();
+    }
+
+    public static void checkout(String fileName) {
+        String fileContent = Commit.readFileContentFrom(currentBranch.getLastCommitId(), fileName);
+        saveOrUpdateInCWD(fileName, fileContent);
+    }
+
+    public static void checkout(String commitId, String fileName) {
+        // read file from commit
+        String fileContent = Commit.readFileContentFrom(commitId, fileName);
+        // save this file in CWD (overwrite if required)
+        saveOrUpdateInCWD(fileName, fileContent);
+    }
+
+
+    public static void log() {
+        String log = currentBranch.getLastCommit().log();
+        System.out.print(log);
     }
 }

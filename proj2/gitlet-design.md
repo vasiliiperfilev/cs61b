@@ -48,8 +48,8 @@ This class defers all Commit, Staging Area, Blob specific logic to the Dog class
 5. static final File STAGING_FOLDER = Utils.join(GITLET_DIR, "staging")
 6. static final File COMMITS_FOLDER = Utils.join(GITLET_DIR, objects, commits)
 7. static final File BLOBS_FOLDER = Utils.join(GITLET_DIR, objects, blobs)
-8. static final Branch currentBranch
-9. static final Commit currentCommit
+8. static Branch currentBranch
+9. static StagingArea stagingArea
 
 ### Staging area (Serializable)
 
@@ -83,6 +83,7 @@ current commit and blobs from **Staging Area**.
 2. private Date date
 3. private String parentCommitID
 4. private HashMap<String, String> trackedFiles
+5. private string id;
 
 ### Blob (Comparable, Serializable)
 
@@ -92,7 +93,8 @@ actually used to store it in File System. If name and SHA1 are equal then blobs 
 #### Fields
 
 1. private String Name
-2. private String SHA1
+2. private String Content
+3. private String SHA1
 
 ## Algorithms
 
@@ -102,13 +104,13 @@ No methods, just a **switch statement** with and **args check**
 
 ### Repository 
 
-1. Load State
+1. Setup Persistance
 
-    Loads all data required in Persistence section
+    Create all folders and files required
 
 2. Save State
 
-   Saves all data required in Persistence section
+   Saves current branch and staging area state
 
 3. Change HEAD pointer
 
@@ -128,9 +130,9 @@ No methods, just a **switch statement** with and **args check**
 
 3. Commit
     
-    Uses **Commit** constructor to create and save new commit. **CurrentCommit** and
-    **Staging Area** state should be passed to that constructor. Updates **Branch**
-    lastCommit and global HEAD pointers
+    Uses **Commit** constructor to create and save new commit. **Branch** current
+    commit and **Staging Area** state should be passed to that constructor. 
+    Updates **Branch** lastCommit
 
 
 4. Rm
@@ -184,36 +186,35 @@ No methods, just a **switch statement** with and **args check**
 
 ### Staging Area (Serializable)
 
-1. Place **Blob** in Add zone
-2. Place **Blob** in Rm zone
+1. Read current state
+2. Update staging area with new blob
 3. Setters/getters
 4. Clear
 5. To String
-6. From File
+6. Save
 
 
 ### Branch
 
 1. Constructor with name 
 2. Setters/getters
-3. Static checkout method
-4. Static remove method
-5. To String
-6. Save - saves pointer
-7. From File - loads from pointer
-8. Read current branch
+3. Get last commit by id
+4. Static checkout method
+5. Static remove method
+6. To String
+7. Save - saves pointer to last commit in file with branch name
+8. From File - loads from pointer
+9. Read current branch
 
 ### Commit (Serializable)
 
 1. Empty constructor for initial commit
-2. Constructor with name and parentId to create new commit
+2. Constructor with message, staging area and parentId to create new commit
 3. Save
 4. From File
-5. Read current commit (because branch stores commits as pointers to file)
 6. Setters/getters
 7. log
 8. Static find
-9. Checkout file from this commit
 10. Static checkoutFromCommit with commitId and file name
 
 ### Blob (Comparable, Serializable)
